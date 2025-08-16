@@ -75,48 +75,49 @@
 #define cfgSoundChan1     26
 #define cfgSoundChan2     27
 #define sndEnableMask     28
-#define soloCh2           29
+#define soloOn            29
+#define soloChannel       30
 
-#define curRomIndex       30
+#define curRomIndex       32
 
-#define ptrCurLine        32
+#define ptrCurLine        34
 
-#define ptrHLConv         36
-#define ptrBgPal          40
-#define ptrObjPal0        44
-#define ptrObjPal1        48
+#define ptrHLConv         38
+#define ptrBgPal          42
+#define ptrObjPal0        46
+#define ptrObjPal1        50
 
-#define ptrLCDScreen      52
-#define frameBlitConst    56
-#define frameBlit         57
+#define ptrLCDScreen      54
+#define frameBlitConst    58
+#define frameBlit         59
 
-#define ptrScreen         58
-#define screenOffset      62
-#define screenAdjustment  64
+#define ptrScreen         60
+#define screenOffset      64
+#define screenAdjustment  66
 
-#define ptr32KRam         66
-#define ptrTileTable      70
-#define ptrBGTileRam      74
+#define ptr32KRam         68
+#define ptrTileTable      72
+#define ptrBGTileRam      76
 
-#define pageCount         78
-#define ptrPageTbl        80
-#define ptrCurRom         84
+#define pageCount         80
+#define ptrPageTbl        82
+#define ptrCurRom         86
 
-#define snd1Vol           88
-#define snd1Env           89
-#define snd1ECtr          90
-#define snd1Div           91
-#define snd1FCtr          92
-#define snd1FTime         93
-#define snd1Freq          94
-#define snd1Length        96
-#define snd1Duty          97
+#define snd1Vol           90
+#define snd1Env           91
+#define snd1ECtr          92
+#define snd1Div           93
+#define snd1FCtr          94
+#define snd1FTime         95
+#define snd1Freq          96
+#define snd1Length        98
+#define snd1Duty          99
 
-#define cTimerFrame       98
-#define cTimerSec         99
-#define cTimerMin         100
-#define cTimerHour        101
-#define cTimerDayL        102
+#define cTimerFrame       100
+#define cTimerSec         101
+#define cTimerMin         102
+#define cTimerHour        103
+#define cTimerDayL        104
 #define cTimerDayH        103
 
 #define snd2Vol           104

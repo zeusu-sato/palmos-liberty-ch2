@@ -86,6 +86,7 @@ static Boolean xmemFormEventHandler(EventType *);
 static Boolean warnFormEventHandler(EventType *);
 static Boolean saveFormEventHandler(EventType *);
 static Boolean xromFormEventHandler(EventType *);
+static void HUDToast(const Char *);
 
 static Boolean rom32KSizeCheck(Char *)                            __REGISTER__;
 
@@ -1172,12 +1173,66 @@ gameFormEventHandler(EventType *event)
          }
 #endif
 
-        if ((event->data.keyDown.modifiers & optionKeyMask) &&
-            (event->data.keyDown.chr == '2'))
+        if (event->data.keyDown.modifiers & optionKeyMask)
         {
-          apu_set_solo_ch2(!globals->emuState.soloCh2);
-          processed = true;
-          goto KEYDOWN_ABORT;
+          Char optChr = event->data.keyDown.chr;
+          if ((optChr == 's') || (optChr == 'S'))
+          {
+            apu_set_solo(!globals->emuState.soloOn,
+                         globals->emuState.soloChannel);
+            globals->prefs->config.cfgSoundSolo = globals->emuState.soloOn;
+            globals->prefs->config.cfgSoundSoloChannel =
+              globals->emuState.soloChannel;
+            {
+              Char buf[16];
+              if (globals->emuState.soloOn)
+                StrPrintF(buf, "Solo: CH%u", globals->emuState.soloChannel);
+              else
+                StrCopy(buf, "Solo: OFF");
+              HUDToast(buf);
+            }
+            processed = true;
+            goto KEYDOWN_ABORT;
+          }
+          else if (optChr == chrTab)
+          {
+            UInt8 ch;
+            if (!globals->emuState.soloOn)
+              ch = 1;
+            else if (globals->emuState.soloChannel < 4)
+              ch = globals->emuState.soloChannel + 1;
+            else
+              ch = 0;
+            apu_set_solo((ch != 0), ch);
+            globals->prefs->config.cfgSoundSolo = globals->emuState.soloOn;
+            globals->prefs->config.cfgSoundSoloChannel =
+              globals->emuState.soloChannel;
+            {
+              Char buf[16];
+              if (globals->emuState.soloOn)
+                StrPrintF(buf, "Solo: CH%u", globals->emuState.soloChannel);
+              else
+                StrCopy(buf, "Solo: OFF");
+              HUDToast(buf);
+            }
+            processed = true;
+            goto KEYDOWN_ABORT;
+          }
+          else if ((optChr >= '1') && (optChr <= '4'))
+          {
+            UInt8 ch = optChr - '0';
+            apu_set_solo(true, ch);
+            globals->prefs->config.cfgSoundSolo = globals->emuState.soloOn;
+            globals->prefs->config.cfgSoundSoloChannel =
+              globals->emuState.soloChannel;
+            {
+              Char buf[16];
+              StrPrintF(buf, "Solo: CH%u", globals->emuState.soloChannel);
+              HUDToast(buf);
+            }
+            processed = true;
+            goto KEYDOWN_ABORT;
+          }
         }
 
         switch (event->data.keyDown.chr)
@@ -3150,6 +3205,8 @@ InitApplication()
       globals->prefs->config.cfgSoundMute     = true;
       globals->prefs->config.cfgSoundChannel1 = true;
       globals->prefs->config.cfgSoundChannel2 = true;
+      globals->prefs->config.cfgSoundSolo     = false;
+      globals->prefs->config.cfgSoundSoloChannel = 1;
 
       if (DeviceSupportsGrayscale()) 
       {
@@ -3790,13 +3847,31 @@ EndApplication()
   MemPtrFree(globals->prefs);
 }
 
+static void
+HUDToast(const Char *msg)
+{
+  RectangleType r;
+  UInt16 len = StrLen(msg);
+  UInt16 width = FntCharsWidth(msg, len) + 4;
+  UInt16 height = FntLineHeight();
+
+  r.topLeft.x = (160 - width) / 2;
+  r.topLeft.y = 0;
+  r.extent.x  = width;
+  r.extent.y  = height;
+
+  WinEraseRectangle(&r, 0);
+  WinDrawRectangleFrame(simpleFrame, &r);
+  WinDrawChars(msg, len, r.topLeft.x + 2, r.topLeft.y);
+}
+
 /**
  * Check the size of the gameboy rom image.
  *
  * @param romName the name of the rom image.
  * @return true if 32K in size, false otherwise.
  */
-static Boolean 
+static Boolean
 rom32KSizeCheck(Char *romName)
 {
   Boolean result = false;
