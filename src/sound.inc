@@ -44,15 +44,22 @@ DoSound1:
 	btst	#7, 0x26(%a1, %d4)	| Are sound circuits on?
 	beq	DoSoundRet		| No, skip sound
 
-	movem.l	%d0-%d4/%a0-%a4, -(%sp)
+        movem.l %d0-%d4/%a0-%a4, -(%sp)
 
-	tst.b	cfgSoundChan2(%a0)	| no, Is channel 2 enabled?
-	bne.s	DoSndCh2		| yes, play it
+        tst.b   cfgSoundChan2(%a0)      | no, Is channel 2 enabled?
+        beq.s   ChkSndCh1
+        btst    #1, sndEnableMask(%a0)  | Is channel 2 allowed?
+        beq.s   ChkSndCh1
+        bra.s   DoSndCh2                | yes, play it
 ChkSndCh1:
-	tst.b	cfgSoundChan1(%a0)	| 2 not enabled.  Is channel 1 enabled?
-	bne.s	DoSndCh1		| yes, play it
-	movem.l	(%sp)+, %d0-%d4/%a0-%a4
-	bra	DoSoundRet
+        tst.b   cfgSoundChan1(%a0)      | 2 not enabled.  Is channel 1 enabled?
+        beq.s   NoChannel
+        btst    #0, sndEnableMask(%a0)  | Is channel 1 allowed?
+        beq.s   NoChannel
+        bra.s   DoSndCh1                | yes, play it
+NoChannel:
+        movem.l (%sp)+, %d0-%d4/%a0-%a4
+        bra     DoSoundRet
 
 					| ***************************
 					|   UPDATE SOUND CHANNEL 1
@@ -121,6 +128,8 @@ DoSndCh2:
 
 	tst.b	cfgSoundChan1(%a0)	| Is channel 1 enabled?
 	beq.s	Ch1NoCheck		| no, skip freq comparision
+        btst    #0, sndEnableMask(%a0)  | Is channel 1 allowed?
+        beq.s   Ch1NoCheck              | no, skip freq comparision
 
 	move.b	snd1Vol(%a0), %d2	| Check Channel 1 amplitude
 	move.b	cfgSoundVolume(%a0), %d5

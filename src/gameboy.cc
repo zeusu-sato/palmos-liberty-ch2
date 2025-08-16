@@ -74,73 +74,75 @@
 #define cfgSoundVolume    25
 #define cfgSoundChan1     26
 #define cfgSoundChan2     27
+#define sndEnableMask     28
+#define soloCh2           29
 
-#define curRomIndex	  28
+#define curRomIndex       30
 
-#define ptrCurLine	  30
+#define ptrCurLine        32
 
-#define ptrHLConv	  34
-#define ptrBgPal	  38
-#define ptrObjPal0	  42
-#define ptrObjPal1	  46
+#define ptrHLConv         36
+#define ptrBgPal          40
+#define ptrObjPal0        44
+#define ptrObjPal1        48
 
-#define ptrLCDScreen	  50
-#define frameBlitConst	  54
-#define frameBlit	  55
+#define ptrLCDScreen      52
+#define frameBlitConst    56
+#define frameBlit         57
 
-#define ptrScreen	  56
-#define screenOffset      60
-#define screenAdjustment  62
+#define ptrScreen         58
+#define screenOffset      62
+#define screenAdjustment  64
 
-#define ptr32KRam	  64
-#define ptrTileTable      68
-#define ptrBGTileRam	  72
+#define ptr32KRam         66
+#define ptrTileTable      70
+#define ptrBGTileRam      74
 
-#define pageCount	  76
-#define	ptrPageTbl	  78
-#define ptrCurRom	  82
+#define pageCount         78
+#define ptrPageTbl        80
+#define ptrCurRom         84
 
-#define snd1Vol           86
-#define snd1Env           87
-#define snd1ECtr          88
-#define snd1Div           89
-#define snd1FCtr          90
-#define snd1FTime         91
-#define snd1Freq          92 
-#define snd1Length        94
-#define snd1Duty          95
+#define snd1Vol           88
+#define snd1Env           89
+#define snd1ECtr          90
+#define snd1Div           91
+#define snd1FCtr          92
+#define snd1FTime         93
+#define snd1Freq          94
+#define snd1Length        96
+#define snd1Duty          97
 
-#define cTimerFrame	  96
-#define	cTimerSec	  97
-#define cTimerMin	  98
-#define	cTimerHour	  99
-#define	cTimerDayL	  100
-#define	cTimerDayH	  101
+#define cTimerFrame       98
+#define cTimerSec         99
+#define cTimerMin         100
+#define cTimerHour        101
+#define cTimerDayL        102
+#define cTimerDayH        103
 
-#define snd2Vol           102
-#define snd2Env           103
-#define snd2ECtr          104
-#define snd2Freq          106
-#define snd2Length        108
-#define snd2Duty          109
+#define snd2Vol           104
+#define snd2Env           105
+#define snd2ECtr          106
+#define snd2Freq          108
+#define snd2Length        110
+#define snd2Duty          111
 
-#define DynaNext          110
-#define	cCycles	          114
-#define	CurRAMBank        116
-#define skipCPUCycles     118
+#define DynaNext          112
+#define cCycles           116
+#define CurRAMBank        118
+#define skipCPUCycles     120
 
 #ifdef RUMBLEPAK
-#define ptrVibrateOn      120
-#define ptrVibrateOff     124
+#define ptrVibrateOn      122
+#define ptrVibrateOff     126
 #endif
 
 #ifdef PALM_HIRES
-#define m68k_device       128
-#define hires320x320      129
-#define use_api           130
-#define winOffscreen      132
-#define winDisplay        136
-#define ptrXlat           140
+#define m68k_device       130
+#define hires320x320      131
+#define use_api           132
+#define winOffscreen      134
+#define winDisplay        138
+#define ptrXlat           142
 #endif
 
 #define	StartDLine	  0x7F4c

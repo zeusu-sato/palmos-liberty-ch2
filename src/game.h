@@ -47,5 +47,6 @@ extern void    GameRestore(PreferencesType *)                         __GAME__;
 extern void    GameEmulation(PreferencesType *, ConfigType *, UInt32) __GAME__;
 extern void    GameTerminate(PreferencesType *)                       __GAME__;
 extern void    EmulateFrame()                                         __GAME__;
+extern void    apu_set_solo_ch2(Boolean)                              __GAME__;
 
 #endif 

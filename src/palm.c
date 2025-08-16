@@ -1172,8 +1172,16 @@ gameFormEventHandler(EventType *event)
          }
 #endif
 
-         switch (event->data.keyDown.chr)
-         {
+        if ((event->data.keyDown.modifiers & optionKeyMask) &&
+            (event->data.keyDown.chr == '2'))
+        {
+          apu_set_solo_ch2(!globals->emuState.soloCh2);
+          processed = true;
+          goto KEYDOWN_ABORT;
+        }
+
+        switch (event->data.keyDown.chr)
+        {
            case findChr:
 
                 // are we supposed to use them in the app?
