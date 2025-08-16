@@ -117,6 +117,8 @@ typedef struct
   Boolean  cfgSoundMute;                // mute sound?
   Boolean  cfgSoundChannel1;            // channel 1 active?
   Boolean  cfgSoundChannel2;            // channel 2 active?
+  Boolean  cfgSoundSolo;                // solo mode?
+  UInt8    cfgSoundSoloChannel;         // solo channel
 
   UInt8    lgray;                       // the light gray configuration setting
   UInt8    dgray;                       // the dark gray configuration setting

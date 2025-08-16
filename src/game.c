@@ -71,7 +71,9 @@ typedef struct
   UInt8        cfgSoundChan1;      // channel 1 is active
   UInt8        cfgSoundChan2;      // channel 2 is active
   UInt8        sndEnableMask;      // bit mask for enabled sound channels
-  UInt8        soloCh2;            // solo channel 2 flag
+  UInt8        soloOn;             // solo mode flag
+  UInt8        soloChannel;        // selected solo channel
+  UInt8        _padSolo;           // padding for alignment
 
   UInt16       currRomIndex;       // the current rom page index
 } EmuStateType;
@@ -723,7 +725,8 @@ GameReset()
   globals->emu.frameBlit               = 0x00;
 
   globals->emuState.sndEnableMask      = 0x0f;
-  globals->emuState.soloCh2            = false;
+  globals->emuState.soloOn             = false;
+  globals->emuState.soloChannel        = 1;
 
   // reset back to the "first" rom page
   globals->emuState.currRomIndex       = 0x01;
@@ -775,7 +778,7 @@ GameReset()
 }
 
 void
-apu_set_solo_ch2(Boolean enable)
+apu_set_solo(Boolean enable, UInt8 channel)
 {
 #ifndef USE_GLOBALS
   GameGlobals *globals;
@@ -783,8 +786,11 @@ apu_set_solo_ch2(Boolean enable)
   FtrGet(appCreator, ftrGameGlobals, (UInt32 *)&globals);
 #endif
 
-  globals->emuState.soloCh2       = enable;
-  globals->emuState.sndEnableMask = enable ? 0x02 : 0x0f;
+  globals->emuState.soloOn = enable;
+  if ((channel >= 1) && (channel <= 4))
+    globals->emuState.soloChannel = channel;
+  globals->emuState.sndEnableMask =
+    enable ? (1 << (globals->emuState.soloChannel - 1)) : 0x0f;
   globals->emu.ptr32KRam[0x7f26]  = 0xF0 | globals->emuState.sndEnableMask;
 }
 
@@ -1300,8 +1306,13 @@ GameEmulation(PreferencesType *prefs, ConfigType *config, UInt32 keyStatus)
 
     globals->emuState.cfgSoundMute   = config->cfgSoundMute;
     globals->emuState.cfgSoundVolume = config->cfgSoundVolume;
-    globals->emuState.cfgSoundChan1  = config->cfgSoundChannel1; 
+    globals->emuState.cfgSoundChan1  = config->cfgSoundChannel1;
     globals->emuState.cfgSoundChan2  = config->cfgSoundChannel2;
+    globals->emuState.soloOn         = config->cfgSoundSolo;
+    globals->emuState.soloChannel    = config->cfgSoundSoloChannel;
+    globals->emuState.sndEnableMask =
+      globals->emuState.soloOn ? (1 << (globals->emuState.soloChannel-1)) : 0x0f;
+    globals->emu.ptr32KRam[0x7f26]  = 0xF0 | globals->emuState.sndEnableMask;
 
     // setup the screen writing information
     globals->emu.ptrLCDScreen        = 
