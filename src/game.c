@@ -70,6 +70,8 @@ typedef struct
   UInt8        cfgSoundVolume;     // the sound volume
   UInt8        cfgSoundChan1;      // channel 1 is active
   UInt8        cfgSoundChan2;      // channel 2 is active
+  UInt8        sndEnableMask;      // bit mask for enabled sound channels
+  UInt8        soloCh2;            // solo channel 2 flag
 
   UInt16       currRomIndex;       // the current rom page index
 } EmuStateType;
@@ -720,6 +722,9 @@ GameReset()
 
   globals->emu.frameBlit               = 0x00;
 
+  globals->emuState.sndEnableMask      = 0x0f;
+  globals->emuState.soloCh2            = false;
+
   // reset back to the "first" rom page
   globals->emuState.currRomIndex       = 0x01;
   globals->emu.ptrCurrRom = 
@@ -758,7 +763,7 @@ GameReset()
   globals->emu.ptr32KRam[0x7f23] = 0xbf;
   globals->emu.ptr32KRam[0x7f24] = 0x77;
   globals->emu.ptr32KRam[0x7f25] = 0xf3;
-  globals->emu.ptr32KRam[0x7f26] = 0xf1;
+  globals->emu.ptr32KRam[0x7f26] = 0xF0 | globals->emuState.sndEnableMask;
   globals->emu.ptr32KRam[0x7f40] = 0x91;
   globals->emu.ptr32KRam[0x7f41] = 0x80;
   globals->emu.ptr32KRam[0x7f47] = 0xfc;
@@ -767,6 +772,20 @@ GameReset()
 
   MemSet(globals->emu.ptrTileTable, MemPtrSize(globals->emu.ptrTileTable), 0);
   MemSet(globals->emu.ptrBGTileRam, MemPtrSize(globals->emu.ptrBGTileRam), 0);
+}
+
+void
+apu_set_solo_ch2(Boolean enable)
+{
+#ifndef USE_GLOBALS
+  GameGlobals *globals;
+
+  FtrGet(appCreator, ftrGameGlobals, (UInt32 *)&globals);
+#endif
+
+  globals->emuState.soloCh2       = enable;
+  globals->emuState.sndEnableMask = enable ? 0x02 : 0x0f;
+  globals->emu.ptr32KRam[0x7f26]  = 0xF0 | globals->emuState.sndEnableMask;
 }
 
 /**

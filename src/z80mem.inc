@@ -952,10 +952,16 @@ zFF25:
 	move.b	%d1, (%a1, %d4.l)
 	rts
 zFF26:
-	andi.b	#0x7F, (%a1, %d4.l)	| Turn on/off Sound (bit 7)
-	andi.b	#0x80, %d1		| Bits 0-3 are current sound channel status
-	or.b	%d1, (%a1, %d4.l)
-	rts
+        andi.b  #0x7F, (%a1, %d4.l)     | Turn on/off Sound (bit 7)
+        andi.b  #0x80, %d1              | Bits 0-3 are current sound channel status
+        or.b    %d1, (%a1, %d4.l)
+        tst.b   soloCh2(%a0)
+        beq.s   zFF26_ret
+        move.b  #0x02, sndEnableMask(%a0)
+        andi.b  #0xF0, (%a1, %d4.l)
+        or.b    #0x02, (%a1, %d4.l)
+zFF26_ret:
+        rts
 
 
 zFF27:
